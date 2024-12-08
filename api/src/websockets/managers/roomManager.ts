@@ -6,18 +6,20 @@ class RoomManager {
 	}
 
 	addUserToRoom(roomId: string, userId: string) {
-		if (!this.rooms.has(roomId)) {
-			this.rooms.set(roomId, new Set());
-		}
+		// TODO: Handle room creation
+		// if (!this.rooms.has(roomId)) {
+		// 	this.rooms.set(roomId, new Set());
+		// }
 		this.rooms.get(roomId)!.add(userId);
 	}
 
 	removeUserFromRoom(roomId: string, userId: string) {
 		if (this.rooms.has(roomId)) {
 			this.rooms.get(roomId)!.delete(userId);
-			if (this.rooms.get(roomId)!.size === 0) {
-				this.rooms.delete(roomId);
-			}
+			// TODO: Handle room deletion
+			// if (this.rooms.get(roomId)!.size === 0) {
+			// 	this.rooms.delete(roomId);
+			// }
 		}
 	}
 

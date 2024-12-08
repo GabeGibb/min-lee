@@ -6,6 +6,8 @@ function App() {
 		<Router>
 			<Routes>
 				<Route path="/" element={<Home />} />
+				<Route path="/host/:roomId" element={<Home />} />
+				<Route path="/join/:roomId" element={<Home />} />
 			</Routes>
 		</Router>
 	);
