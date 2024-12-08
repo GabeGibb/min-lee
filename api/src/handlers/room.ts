@@ -1,5 +1,3 @@
-// TODO: Define all routes here
-
 import express from "express";
 
 const router = express.Router();

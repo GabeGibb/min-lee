@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { roomManager } from "../roomManager";
+import { roomManager } from "../managers/roomManager";
 
 export const handleRoomEvents = (io: Server, socket: Socket) => {
 	socket.on("join-room", (roomId: string) => {
