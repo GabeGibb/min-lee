@@ -1,17 +1,18 @@
 import { io, Socket } from "socket.io-client";
+import { SocketEvents } from "@min-lee/types";
 
 type Listener<T = any> = (data: T) => void;
 
 export class WebSocketManager {
 	private socket: Socket;
-	private listeners: Map<string, Listener[]>;
+	private listeners: Map<keyof SocketEvents, Listener[]>;
 
 	constructor(url: string) {
-		this.socket = io(url); // Use Socket.IO client
+		this.socket = io(url);
 		this.listeners = new Map();
 
 		// Handle incoming messages
-		this.socket.onAny((eventName, payload) => {
+		this.socket.onAny((eventName: keyof SocketEvents, payload) => {
 			const eventListeners = this.listeners.get(eventName);
 			if (eventListeners) {
 				eventListeners.forEach((listener) => listener(payload));
@@ -26,7 +27,7 @@ export class WebSocketManager {
 	/**
 	 * Subscribe to an event
 	 */
-	subscribe<T>(event: string, listener: Listener<T>) {
+	subscribe<E extends keyof SocketEvents>(event: E, listener: Listener<SocketEvents[E]>) {
 		if (!this.listeners.has(event)) {
 			this.listeners.set(event, []);
 		}
@@ -36,7 +37,7 @@ export class WebSocketManager {
 	/**
 	 * Unsubscribe from an event
 	 */
-	unsubscribe<T>(event: string, listener: Listener<T>) {
+	unsubscribe<E extends keyof SocketEvents>(event: E, listener: Listener<SocketEvents[E]>) {
 		const eventListeners = this.listeners.get(event);
 		if (eventListeners) {
 			this.listeners.set(
@@ -49,7 +50,7 @@ export class WebSocketManager {
 	/**
 	 * Emit an event
 	 */
-	emit<T>(event: string, payload: T) {
+	emit<E extends keyof SocketEvents>(event: E, payload: SocketEvents[E]) {
 		this.socket.emit(event, payload);
 	}
 }

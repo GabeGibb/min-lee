@@ -1,18 +1,34 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { createRoom, getRoom } from "@/lib/services/room";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
-	const [joinRoomCode, setJoinRoomCode] = useState("");
+	const [joinRoomCode, setJoinRoomCode] = useState<string>("");
+	const navigate = useNavigate();
 
-	const handleCreateRoom = () => {
+	const handleCreateRoom = async () => {
 		// Logic to create a room
 		console.log("Create a room");
+		try {
+			const response = await createRoom();
+			console.log(response);
+			navigate(`/room/${response.roomId}`);
+		} catch (e) {
+			console.error(e);
+		}
 	};
 
 	const handleJoinRoom = () => {
 		// Logic to join a room with the code
 		console.log("Join room with code:", joinRoomCode);
+		try {
+			getRoom(joinRoomCode);
+			navigate(`/room/${joinRoomCode}`);
+		} catch (e) {
+			console.error(e);
+		}
 	};
 
 	return (
@@ -22,7 +38,7 @@ const Home: React.FC = () => {
 					{" "}
 					Create Room{" "}
 				</Button>
-				<Input />
+				<Input onChange={(e) => setJoinRoomCode(e.target.value)} />
 				<Button onClick={handleJoinRoom}> Join Room </Button>
 			</div>
 		</div>

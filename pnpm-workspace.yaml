@@ -1,4 +1,4 @@
 packages:
     - "frontend"
-    - "backend"
+    - "api"
     - "shared/types"

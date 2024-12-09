@@ -4,7 +4,7 @@ import helmet from "helmet";
 import cors from "cors";
 
 import * as middlewares from "./middlewares";
-import handlers from "./handlers";
+import roomHandler from "./handlers/room";
 
 require("dotenv").config();
 
@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 	});
 });
 
-app.use("/api/v1", handlers);
+app.use("/api/v1/room", roomHandler);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

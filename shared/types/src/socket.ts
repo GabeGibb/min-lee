@@ -1,11 +1,17 @@
-export type RoomEvents = {
-	"join-room": string; // roomId
-	"leave-room": string; // roomId
-	"user-joined": { userId: string; users: string[] };
-	"user-left": { userId: string; users: string[] };
-};
+export enum ClientToServerEvents {
+	JoinRoom = "join-room",
+	LeaveRoom = "leave-room",
+}
 
-export type ChatEvents = {
-	"send-message": { roomId: string; message: string };
-	"receive-message": { userId: string; message: string };
-};
+export enum ServerToClientEvents {
+	UserJoined = "user-joined",
+	UserLeft = "user-left",
+}
+
+export interface SocketEvents {
+	// Event names mapped to their corresponding payloads
+	[ClientToServerEvents.JoinRoom]: (roomId: string) => void;
+	[ClientToServerEvents.LeaveRoom]: (roomId: string) => void;
+	[ServerToClientEvents.UserJoined]: (data: { userId: string; users: string[] }) => void;
+	[ServerToClientEvents.UserLeft]: (data: { userId: string; users: string[] }) => void;
+}
