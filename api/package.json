@@ -19,12 +19,14 @@
 	},
 	"license": "MIT",
 	"dependencies": {
+		"colyseus": "^0.15.57",
 		"cors": "^2.8.5",
 		"dotenv": "^16.4.5",
 		"express": "^4.21.1",
 		"helmet": "^8.0.0",
 		"morgan": "^1.10.0",
-		"socket.io": "^4.8.1"
+		"socket.io": "^4.8.1",
+		"uuid": "^11.0.3"
 	},
 	"devDependencies": {
 		"@min-lee/types": "workspace:*",
@@ -32,7 +34,6 @@
 		"@types/express": "^4.17.20",
 		"@types/morgan": "^1.9.9",
 		"@types/node": "^22.7.5",
-		"@types/socket.io": "^3.0.2",
 		"@typescript-eslint/eslint-plugin": "^7.16.1",
 		"@typescript-eslint/parser": "^7.16.1",
 		"eslint": "^8.57.0",

@@ -1,5 +1,7 @@
+import { Room } from "./room";
+
 class RoomManager {
-	private rooms: Map<string, Set<string>>;
+	private rooms: Map<string, Room>;
 	private usersToRooms: Map<string, string>;
 
 	constructor() {
@@ -7,37 +9,43 @@ class RoomManager {
 		this.usersToRooms = new Map();
 	}
 
-	createRoom() {
+	createRoom(): string {
 		const roomId = Math.random().toString(36).substring(7);
-		this.rooms.set(roomId, new Set());
+		this.rooms.set(roomId, new Room(roomId));
 		return roomId;
 	}
 
-	addUserToRoom(roomId: string, userId: string) {
-		// TODO: Handle room creation
+	addUserToRoom(roomId: string, userId: string): boolean {
 		if (!this.rooms.has(roomId)) {
-			this.rooms.set(roomId, new Set());
+			this.rooms.set(roomId, new Room(roomId));
 		}
-		this.rooms.get(roomId)!.add(userId);
+		const room = this.rooms.get(roomId)!;
+		const isHost = room.addUser(userId);
 
 		this.usersToRooms.set(userId, roomId);
+		return isHost;
 	}
 
-	removeUserFromRoom(userId: string) {
+	removeUserFromRoom(userId: string): void {
 		const roomId = this.usersToRooms.get(userId);
-
 		if (roomId) {
-			console.log(this.rooms.get(roomId));
-			this.rooms.get(roomId)!.delete(userId);
-			console.log(this.rooms.get(roomId));
-			// TODO: Handle room deletion
-			if (this.rooms.get(roomId)!.size === 0) {
-				this.rooms.delete(roomId);
+			const room = this.rooms.get(roomId);
+			if (room) {
+				const wasHost = room.removeUser(userId);
+
+				if (wasHost) {
+					console.log(`Host ${userId} has left the room. No new host assigned.`);
+				}
+
+				if (room.isEmpty()) {
+					this.rooms.delete(roomId); // Clean up empty room
+				}
 			}
+			this.usersToRooms.delete(userId);
 		}
 	}
 
-	getRoom(roomId: string): Set<string> | undefined {
+	getRoom(roomId: string): Room | undefined {
 		return this.rooms.get(roomId);
 	}
 
@@ -46,7 +54,13 @@ class RoomManager {
 	}
 
 	getUsersInRoom(roomId: string): string[] {
-		return Array.from(this.rooms.get(roomId) || []);
+		const room = this.rooms.get(roomId);
+		return room ? room.getUsers() : [];
+	}
+
+	getHostInRoom(roomId: string): string | null {
+		const room = this.rooms.get(roomId);
+		return room ? room.hostId : null;
 	}
 }
 

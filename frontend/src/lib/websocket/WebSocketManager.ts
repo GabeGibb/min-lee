@@ -9,6 +9,9 @@ export class WebSocketManager {
 
 	constructor(url: string) {
 		this.socket = io(url);
+		if (localStorage.getItem("sessionId")) {
+			this.socket.auth = { sessionId: localStorage.getItem("sessionId") };
+		}
 		this.listeners = new Map();
 
 		// Handle incoming messages
@@ -22,6 +25,10 @@ export class WebSocketManager {
 		this.socket.on("connect", () => console.log("Socket.IO connected"));
 		this.socket.on("disconnect", () => console.log("Socket.IO disconnected"));
 		this.socket.on("connect_error", (error) => console.error("Socket.IO error:", error));
+		this.socket.on("session", (data) => {
+			localStorage.setItem("sessionId", data.sessionId);
+			this.socket.auth = { sessionId: data.sessionId };
+		});
 	}
 
 	/**

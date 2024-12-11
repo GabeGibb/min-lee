@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createRoom, getRoom } from "@/lib/services/room";
+import { createRoom, getRoomById } from "@/lib/services/room";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +24,7 @@ const Home: React.FC = () => {
 		// Logic to join a room with the code
 		console.log("Join room with code:", joinRoomCode);
 		try {
-			getRoom(joinRoomCode);
+			getRoomById(joinRoomCode);
 			navigate(`/room/${joinRoomCode}`);
 		} catch (e) {
 			console.error(e);

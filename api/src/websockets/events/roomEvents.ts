@@ -4,37 +4,43 @@ import { ClientToServerEvents, ServerToClientEvents, SocketEvents } from "@min-l
 
 export const handleRoomEvents = (io: Server<SocketEvents, SocketEvents>, socket: Socket<SocketEvents, SocketEvents>) => {
 	socket.on(ClientToServerEvents.JoinRoom, (roomId: string) => {
-		roomManager.addUserToRoom(roomId, socket.id);
+		const userId = socket.handshake.auth.sessionId;
+
+		const isHost = roomManager.addUserToRoom(roomId, userId);
 		socket.join(roomId);
 
 		io.to(roomId).emit(ServerToClientEvents.UserJoined, {
-			userId: socket.id,
+			userId,
+			isHost,
 			users: roomManager.getUsersInRoom(roomId),
 		});
+
+		if (isHost) {
+			io.to(roomId).emit(ServerToClientEvents.HostAssigned, {
+				hostId: userId,
+			});
+		}
 	});
 
-	// TODO: This can be a manual call? Might not need this.
 	const leaveRoom = () => {
-		const userId = socket.id;
+		const userId = socket.handshake.auth.sessionId;
 
-		// Find the room(s) the user is part of
 		const roomId = roomManager.getRoomIdByUserId(userId);
 
 		if (roomId) {
-			// Remove the user from the room in RoomManager
-			roomManager.removeUserFromRoom(userId);
-
-			// Leave the socket.io room
-			socket.leave(roomId);
-
-			// Notify other users in the room
+			// const wasHost = roomManager.removeUserFromRoom(userId);
 			io.to(roomId).emit(ServerToClientEvents.UserLeft, {
 				userId,
 				users: roomManager.getUsersInRoom(roomId),
 			});
+
+			// if (wasHost) {
+			// 	io.to(roomId).emit(ServerToClientEvents.HostLeft, {
+			// 		hostId: userId,
+			// 	});
+			// }
 		}
 	};
 
-	socket.on(ClientToServerEvents.LeaveRoom, leaveRoom);
 	socket.on("disconnect", leaveRoom);
 };
