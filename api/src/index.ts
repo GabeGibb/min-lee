@@ -1,6 +1,6 @@
 import http from "http";
 import app from "./app"; // Import the Express app
-import { setupWebSocketServer } from "./websockets";
+import { setupColyseus } from "./colyseus";
 
 const port = process.env.PORT || 5000;
 
@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 const server = http.createServer(app);
 
 // Set up WebSocket server
-setupWebSocketServer(server);
+setupColyseus(server);
 
 // Start the server
 server.listen(port, () => {
