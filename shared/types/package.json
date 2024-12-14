@@ -8,5 +8,8 @@
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"dependencies": {
+		"@colyseus/schema": "^2.0.36"
+	}
 }
